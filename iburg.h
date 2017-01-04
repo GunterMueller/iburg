@@ -1,9 +1,32 @@
+/*
+ * Copyright (c) 1993,1994,1995,1996 David R. Hanson.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * <http://www.opensource.org/licenses/mit-license.php>
+ */
+
 #ifndef BURG_INCLUDED
 #define BURG_INCLUDED
 
-/* $Id$ */
 /* iburg.c: */
-extern void *alloc(int nbytes);
+extern void *alloc(int);
 
 typedef enum { TERM=1, NONTERM } Kind;
 typedef struct rule *Rule;
@@ -28,8 +51,8 @@ struct nonterm {	/* non-terminals: */
 	Rule chain;		/* chain rules w/non-terminal on rhs */
 	Nonterm link;		/* next terminal in number order */
 };
-extern Nonterm nonterm(char *id);
-extern Term term(char *id, int esn);
+extern Nonterm nonterm(char *);
+extern Term term(char *, int);
 
 typedef struct tree *Tree;
 struct tree {		/* tree patterns: */
@@ -37,7 +60,7 @@ struct tree {		/* tree patterns: */
 	Tree left, right;	/* operands */
 	int nterms;		/* number of terminal nodes in this tree */
 };
-extern Tree tree(char *op, Tree left, Tree right);
+extern Tree tree(char *, Tree, Tree);
 
 struct rule {		/* rules: */
 	Nonterm lhs;		/* lefthand side non-terminal */
@@ -51,15 +74,15 @@ struct rule {		/* rules: */
 	Rule decode;		/* next rule with same lhs */
 	Rule kids;		/* next rule with same burm_kids pattern */
 };
-extern Rule rule(char *id, Tree pattern, int ern, int cost);
+extern Rule rule(char *, Tree, int, int);
 extern int maxcost;		/* maximum cost */
 
 /* gram.y: */
-void yyerror(char *fmt, ...);
+void yyerror(char *, ...);
 int yyparse(void);
-void yywarn(char *fmt, ...);
+void yywarn(char *, ...);
 extern int errcnt;
 extern FILE *infp;
 extern FILE *outfp;
 
-#endif
+#endif /* BURG_INCLUDED */
