@@ -11,13 +11,17 @@ ACM Letters on Prog. Languages and Systems 1, 3 (Sep. 1992), 213-226.
 http://storage.webhop.net/documents/iburg.pdf
 
 `iburg` is written in C. It requires a C compiler and a Yacc program to
-build. If you need a Yacc program, a basic, cross-platform Yacc can be
-found here: https://github.com/ibara/yacc
+build. If you need a Yacc program, a dependency-free, cross-platform Yacc
+can be found here: https://github.com/ibara/yacc
 
+Compiling
+---------
 Once you have a C compiler and a Yacc program, you can compile `iburg`
 by typing `make`. There should be no warnings or errors with most
 modern compilers.
 
+Testing
+-------
 `make test` runs `iburg` on `sample[45].brg` and executes the resulting
 programs. The output should be something like:
 ```
@@ -45,4 +49,16 @@ stm: MOVE(MEM(loc),reg)
 
 $
 ```
+
+Installing
+----------
 To install `iburg`, run `make install` with root privileges.
+
+Licensing
+---------
+`iburg` is distributed under the terms of the MIT license.
+Please see `LICENSE` for details.
+
+Get a tarball
+-------------
+https://devio.us/~bcallah/iburg/iburg-20170103.tar.gz
