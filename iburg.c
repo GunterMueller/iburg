@@ -198,7 +198,7 @@ static void *
 install(char *name)
 {
 	struct entry *p = alloc(sizeof *p);
-	int i = hash(name)%HASHSIZE;
+	long i = hash(name)%HASHSIZE;
 
 	p->sym.name = name;
 	p->link = table[i];

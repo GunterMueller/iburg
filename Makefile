@@ -6,6 +6,9 @@ PREFIX=	/usr/local
 CC?=	cc
 CFLAGS?=-O2 -pipe -Wall
 
+YACC?=	yacc
+YFLAGS=
+
 PROG=	iburg
 OBJS=	iburg.o gram.o
 
