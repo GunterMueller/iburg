@@ -23,16 +23,19 @@
  * <http://www.opensource.org/licenses/mit-license.php>
  */
 
-#include <string.h>
-#include <stdio.h>
 #include <limits.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "iburg.h"
+
 static int yylineno = 0;
 %}
+
 %union {
-	int n;
-	char *string;
-	Tree tree;
+    int n;
+    char *string;
+    Tree tree;
 }
 %term TERMINAL
 %term START
@@ -43,7 +46,9 @@ static int yylineno = 0;
 %type	<string>	lhs
 %type   <tree>          tree
 %type   <n>             cost
+
 %%
+
 spec	: decls PPERCENT rules		{ yylineno = 0; }
 	| decls				{ yylineno = 0; }
 	;
@@ -66,7 +71,8 @@ blist	: /* lambda */
 	;
 
 rules	: /* lambda */
-	| rules lhs ':' tree '=' INT cost ';' '\n'	{ rule($2, $4, $6, $7); }
+	| rules lhs ':' tree '=' INT cost ';' '\n'	{
+					rule($2, $4, $6, $7); }
 	| rules '\n'
 	| rules error '\n'		{ yyerrok; }
 	;
@@ -80,15 +86,19 @@ tree	: ID                            { $$ = tree($1, NULL, NULL); }
 	;
 
 cost	: /* lambda */			{ $$ = 0; }
-	| '(' INT ')'			{ if ($2 > maxcost) {
-						yyerror("%d exceeds maximum cost of %d\n", $2, maxcost);
-						$$ = maxcost;
-					} else
-						$$ = $2; }
+	| '(' INT ')'			{
+		if ($2 > maxcost) {
+			yyerror("%d exceeds maximum cost of %d\n",
+				$2, maxcost);
+			$$ = maxcost;
+		} else
+			$$ = $2; }
 	;
+
 %%
-#include <stdarg.h>
+
 #include <ctype.h>
+#include <stdarg.h>
 
 int errcnt = 0;
 FILE *infp = NULL;
@@ -96,21 +106,25 @@ FILE *outfp = NULL;
 static char buf[BUFSIZ], *bp = buf;
 static int ppercent = 0;
 
-static int get(void) {
+static int
+get(void)
+{
 	if (*bp == 0) {
 		bp = buf;
 		*bp = 0;
 		if (fgets(buf, sizeof buf, infp) == NULL)
 			return EOF;
 		yylineno++;
-		while (buf[0] == '%' && buf[1] == '{' && (buf[2] == '\n' || buf[2] == '\r')) {
+		while (buf[0] == '%' && buf[1] == '{' && (buf[2] == '\n' ||
+		       buf[2] == '\r')) {
 			for (;;) {
 				if (fgets(buf, sizeof buf, infp) == NULL) {
 					yywarn("unterminated %{...%}\n");
 					return EOF;
 				}
 				yylineno++;
-				if (strcmp(buf, "%}\n") == 0 || strcmp(buf, "%}\r\n") == 0)
+				if (strcmp(buf, "%}\n") == 0 ||
+				    strcmp(buf, "%}\r\n") == 0)
 					break;
 				fputs(buf, outfp);
 			}
@@ -122,7 +136,9 @@ static int get(void) {
 	return *bp++;
 }
 
-void yyerror(char *fmt, ...) {
+void
+yyerror(char *fmt, ...)
+{
 	va_list ap;
 
 	va_start(ap, fmt);
@@ -134,7 +150,9 @@ void yyerror(char *fmt, ...) {
 	errcnt++;
 }
 
-int yylex(void) {
+int
+yylex(void)
+{
 	int c;
 
 	while ((c = get()) != EOF) {
@@ -162,7 +180,8 @@ int yylex(void) {
 			do {
 				int d = c - '0';
 				if (n > (INT_MAX - d)/10)
-					yyerror("integer greater than %d\n", INT_MAX);
+					yyerror("integer greater than %d\n",
+						INT_MAX);
 				else
 					n = 10*n + d;
 				c = get();
@@ -172,7 +191,8 @@ int yylex(void) {
 			return INT;
 		} else if (isalpha(c)) {
 			char *p = bp - 1;
-			while (isalpha((unsigned char) *bp) || isdigit((unsigned char) *bp) || *bp == '_')
+			while (isalpha((unsigned char) *bp) ||
+			       isdigit((unsigned char) *bp) || *bp == '_')
 				bp++;
 			yylval.string = alloc(bp - p + 1);
 			strncpy(yylval.string, p, bp - p);
@@ -181,12 +201,15 @@ int yylex(void) {
 		} else if (isprint(c))
 			yyerror("invalid character `%c'\n", c);
 		else
-			yyerror("invalid character `\\%03o'\n", (unsigned char)c);
+			yyerror("invalid character `\\%03o'\n",
+				(unsigned char) c);
 	}
 	return 0;
 }
 
-void yywarn(char *fmt, ...) {
+void
+yywarn(char *fmt, ...)
+{
 	va_list ap;
 
 	va_start(ap, fmt);

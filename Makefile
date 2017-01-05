@@ -1,7 +1,7 @@
 # This Makefile written by Brian Callahan <bcallah@devio.us>
 # and released into the Public Domain.
 
-PREFIX=	/usr/local
+PREFIX?=/usr/local
 
 CC?=	cc
 CFLAGS?=-O2 -pipe -Wall

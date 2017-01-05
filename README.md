@@ -61,4 +61,4 @@ Please see `LICENSE` for details.
 
 Get a tarball
 -------------
-https://devio.us/~bcallah/iburg/iburg-20170103.tar.gz
+https://devio.us/~bcallah/iburg/iburg-20170105.tar.gz

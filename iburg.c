@@ -23,12 +23,12 @@
  */
 
 #include <assert.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <ctype.h>
-#include <string.h>
 #include <limits.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "iburg.h"
 
@@ -76,7 +76,8 @@ main(int argc, char *argv[])
 			Iflag = 1;
 		else if (strcmp(argv[i], "-T") == 0)
 			Tflag = 1;
-		else if (strncmp(argv[i], "-maxcost=", 9) == 0 && isdigit((unsigned char) argv[i][9]))
+		else if (strncmp(argv[i], "-maxcost=", 9) == 0 &&
+			 isdigit((unsigned char) argv[i][9]))
 			maxcost = atoi(argv[i] + 9);
 		else if (strncmp(argv[i], "-p", 2) == 0 && argv[i][2])
 			prefix = &argv[i][2];
@@ -90,14 +91,16 @@ main(int argc, char *argv[])
 			if (strcmp(argv[i], "-") == 0)
 				infp = stdin;
 			else if ((infp = fopen(argv[i], "r")) == NULL) {
-				yyerror("%s: can't read `%s'\n", argv[0], argv[i]);
+				yyerror("%s: can't read `%s'\n", argv[0],
+					argv[i]);
 				exit(1);
 			}
 		} else if (outfp == NULL) {
 			if (strcmp(argv[i], "-") == 0)
 				outfp = stdout;
 			if ((outfp = fopen(argv[i], "w")) == NULL) {
-				yyerror("%s: can't write `%s'\n", argv[0], argv[i]);
+				yyerror("%s: can't write `%s'\n", argv[0],
+					argv[i]);
 				exit(1);
 			}
 		}
@@ -158,7 +161,7 @@ stringf(char *fmt, ...)
 	vsprintf(buf, fmt, ap);
 	va_end(ap);
 	return strcpy(alloc(strlen(buf) + 1), buf);
-}	
+}
 
 struct entry {
 	union {
@@ -422,7 +425,8 @@ emitcase(Term p, int entnumber)
 			if (r->pattern->nterms > 1) {
 				print("%2if (%1/* %R */\n", r);
 				emittest(r->pattern->left,  "l",
-					r->pattern->right->nterms ? " && " : " ");
+					 r->pattern->right->nterms ? " && " :
+					 " ");
 				emittest(r->pattern->right, "r", " ");
 				print("%2) {\n%3c = ");
 			} else
@@ -530,9 +534,12 @@ computekids(Tree t, char *v, char *bp, int *ip)
 		sprintf(bp, "\t\tkids[%d] = %s;\n", (*ip)++, v);
 		bp += strlen(bp);
 	} else if (p->arity > 0) {
-		bp = computekids(t->left, stringf("LEFT_CHILD(%s)", v), bp, ip);
+		bp = computekids(t->left, stringf("LEFT_CHILD(%s)", v),
+				 bp, ip);
 		if (p->arity == 2)
-			bp = computekids(t->right, stringf("RIGHT_CHILD(%s)", v), bp, ip);
+			bp = computekids(t->right,
+					 stringf("RIGHT_CHILD(%s)", v),
+					 bp, ip);
 	}
 	return bp;
 }
@@ -633,7 +640,8 @@ emitleaf(Term p, int entnumber)
 			rule[r->lhs->number] = r;
 			closure(cost, rule, r->lhs, r->cost);
 		}
-	print("%2{\n%3static struct %Pstate z = { %d, 0, 0,\n%4{%10,\n", p->esn);
+	print("%2{\n%3static struct %Pstate z = { %d, 0, 0,\n%4{%10,\n",
+	      p->esn);
 	for (i = 1; i <= entnumber; i++)
 		if (cost[i] < maxcost)
 			print("%5%d,%1/* %R */\n", cost[i], rule[i]);
@@ -803,7 +811,8 @@ emitterms(Term eterms)
 	for (k = 0, p = eterms; p; p = p->link) {
 		for ( ; k < p->esn; k++)
 			print("%10,%1/* %d */\n", k);
-		print("%1%d,%1/* %d=%S */\n", p->arity < 0 ? 0 : p->arity, k++, p);
+		print("%1%d,%1/* %d=%S */\n", p->arity < 0 ? 0 : p->arity,
+		      k++, p);
 	}
 	print("};\n\n");
 	if (Iflag) {
@@ -828,7 +837,8 @@ emittest(Tree t, char *v, char *suffix)
 			t->nterms > 1 ? " && " : suffix, p);
 		if (t->left)
 			emittest(t->left, stringf("%s->left",  v),
-				t->right && t->right->nterms ? " && " : suffix);
+				 t->right && t->right->nterms ? " && " :
+				 suffix);
 		if (t->right)
 			emittest(t->right, stringf("%s->right", v), suffix);
 	}
