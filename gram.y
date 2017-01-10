@@ -167,12 +167,12 @@ yylex(void)
 		if (c == '%' && *bp == '%') {
 			bp++;
 			return ppercent++ ? 0 : PPERCENT;
-		} else if (c == '%' && strncmp(bp, "term", 4) == 0
-		&& isspace((unsigned char) bp[4])) {
+		} else if (c == '%' && strncmp(bp, "term", 4) == 0 &&
+			   isspace((unsigned char) bp[4])) {
 			bp += 4;
 			return TERMINAL;
-		} else if (c == '%' && strncmp(bp, "start", 5) == 0
-		&& isspace((unsigned char) bp[5])) {
+		} else if (c == '%' && strncmp(bp, "start", 5) == 0 &&
+			   isspace((unsigned char) bp[5])) {
 			bp += 5;
 			return START;
 		} else if (isdigit(c)) {
@@ -198,11 +198,12 @@ yylex(void)
 			strncpy(yylval.string, p, bp - p);
 			yylval.string[bp - p] = 0;
 			return ID;
-		} else if (isprint(c))
+		} else if (isprint(c)) {
 			yyerror("invalid character `%c'\n", c);
-		else
+		} else {
 			yyerror("invalid character `\\%03o'\n",
 				(unsigned char) c);
+		}
 	}
 	return 0;
 }
